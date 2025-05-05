@@ -7,7 +7,7 @@ import jwt
 
 api = FastAPI()
 
-MASTER_USER_DB = dict()
+master_user_db = dict()
 SECRET_KEY = "taen$ighee0iegh2si3Usie"
 HASH_ALGO = "HS256"
 
@@ -34,11 +34,11 @@ def health_check():
 
 @api.post("/register", status_code=201)
 async def register_handler(user: UserIn):
-    if user.username in MASTER_USER_DB:
+    if user.username in master_user_db:
         raise HTTPException(401, "user already registerd")
     
     user = RegisterUser(user.username, user.password)
-    MASTER_USER_DB[user.username] = user
+    master_user_db[user.username] = user
 
     return {"message": f"{user.username} registerd successfully"}
 
@@ -54,10 +54,10 @@ def generate_jwt(username):
 
 @api.post("/login", status_code=201)
 async def login_handler(login_user: UserIn):
-    if login_user.username not in MASTER_USER_DB:
+    if login_user.username not in master_user_db:
         raise HTTPException(404, f"{login_user.username} not found. register first")
     else:
-        saved_user = MASTER_USER_DB[login_user.username]
+        saved_user = master_user_db[login_user.username]
         print(type(saved_user))
         if bcrypt.checkpw(str.encode(login_user.password), saved_user.password):
             token = generate_jwt(saved_user.username)
@@ -65,7 +65,7 @@ async def login_handler(login_user: UserIn):
                         "auth_token": token}
             return ret_resp
         else:
-            raise HTTPException(401, f"invalid password")
+            raise HTTPException(401, "invalid password")
 
 
 # can i define a custom decorator which mandates that a jwt be present?
