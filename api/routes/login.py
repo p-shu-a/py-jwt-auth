@@ -2,14 +2,14 @@ from fastapi import Depends, HTTPException, APIRouter
 from sqlalchemy import select
 from api.models.user import DBUser, UserIn
 from api.core.token import generate_jwt
-import bcrypt
-from api.db.database import get_session
+from api.db.database import get_db_session
 from sqlalchemy.ext.asyncio import AsyncSession
+import bcrypt
 
 api_router = APIRouter()
 
 @api_router.post("/login", status_code=201)
-async def login_handler(login_user: UserIn, session: AsyncSession = Depends(get_session)):
+async def login_handler(login_user: UserIn, session: AsyncSession = Depends(get_db_session)):
 
     query = select(DBUser).where(login_user.username == DBUser.username)
     result = await session.execute(query)

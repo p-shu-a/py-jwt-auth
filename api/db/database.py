@@ -18,7 +18,7 @@ async_session = sessionmaker(
 # provides a baseclass to register object (class) to DB Table
 Base = declarative_base()
 
-async def get_session():
+async def get_db_session():
     async with async_session() as session:
         yield session
 

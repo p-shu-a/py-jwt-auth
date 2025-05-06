@@ -1,8 +1,5 @@
-
-import time
-from api.core.globals import master_user_db
 from fastapi import HTTPException, APIRouter, Depends
-from api.db.database import get_session
+from api.db.database import get_db_session
 from api.models.user import DBUser, UserIn, RegisterUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -10,7 +7,7 @@ from sqlalchemy import select
 api_router = APIRouter()
 
 @api_router.post("/register", status_code=201)
-async def register_handler(user: UserIn, session: AsyncSession = Depends(get_session)):
+async def register_handler(user: UserIn, session: AsyncSession = Depends(get_db_session)):
 
     query = select(DBUser).where(DBUser.username == user.username)
     result = await session.execute(query)
