@@ -1,25 +1,29 @@
-import pytest
 from fastapi.testclient import TestClient
-from main import api, master_user_db
-from main import RegisterUser
-
+from api.models.user import RegisterUser
+from api.core.globals import master_user_db
+from api.app import api
+import time
 client = TestClient(api)
-TEST_USER_RESUABLE = RegisterUser("joan_holloway", "office_space")
+
+TEST_USER_RESUABLE = RegisterUser("joan_holloway",
+                                  "office_space",
+                                  "internet",
+                                  "127.0.0.1",
+                                  int(time.time()))
+
 TEST_USER_RESUABLE_JSON = {"username": "joan_holloway",
                            "password": "office_space"}
 
-def resetDB():
-    master_user_db[TEST_USER_RESUABLE_JSON["username"]] = TEST_USER_RESUABLE
-
 # test saving a new user
 def test_register_new_user():
-    resp = client.post("/register", json=TEST_USER_RESUABLE_JSON)
+    payload = {"username":f"joan_holloway_{time.time()}", "password":"office_space"}
+    resp = client.post("/register", json=payload)
     assert resp.status_code == 201
     assert resp.json() == {"message" : f"{TEST_USER_RESUABLE_JSON['username']} registerd successfully"}
 
 # Test saving an existing user.
 def test_register_existing_user():
-    #resetDB()
+    
     resp = client.post("/register", json=TEST_USER_RESUABLE_JSON)
     assert resp.status_code == 401
     assert resp.json() == {"detail": "user already registerd"}
@@ -45,7 +49,7 @@ def test_login_non_exist():
 
 # test logging in with an existing user
 def test_login_existing_user():
-    resetDB() # add joan_holloway and her password to master_user_db
+    
     resp = client.post("/login", json=TEST_USER_RESUABLE_JSON)
     assert resp.status_code == 201
     resp_body = resp.json()
@@ -54,7 +58,7 @@ def test_login_existing_user():
 
 # user exists but password is incorrect
 def test_existing_user_wrong_password():
-    resetDB()
+
     payload = {"username":TEST_USER_RESUABLE_JSON['username'],
                "password": "peggy_sue"}
     resp = client.post("/login", json=payload)
