@@ -8,8 +8,7 @@ client = TestClient(api)
 TEST_USER_RESUABLE = RegisterUser("joan_holloway",
                                   "office_space",
                                   "internet",
-                                  "127.0.0.1",
-                                  int(time.time()))
+                                  "127.0.0.1")
 
 TEST_USER_RESUABLE_JSON = {"username": "joan_holloway",
                            "password": "office_space"}
