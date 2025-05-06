@@ -3,7 +3,7 @@ import time
 from api.core.globals import master_user_db
 from fastapi import HTTPException, APIRouter, Depends
 from api.db.database import get_session
-from api.models.user import UserIn, RegisterUser, User
+from api.models.user import DBUser, UserIn, RegisterUser
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -12,7 +12,7 @@ api_router = APIRouter()
 @api_router.post("/register", status_code=201)
 async def register_handler(user: UserIn, session: AsyncSession = Depends(get_session)):
 
-    query = select(User).where(User.username == user.username)
+    query = select(DBUser).where(DBUser.username == user.username)
     result = await session.execute(query)
     user_exist = result.scalar_one_or_none()
 
@@ -21,7 +21,7 @@ async def register_handler(user: UserIn, session: AsyncSession = Depends(get_ses
     
     reg_user = RegisterUser(user.username, user.password, "internet", "127.0.0.1")
 
-    db_user = User(
+    db_user = DBUser(
         username=reg_user.username,
         password=reg_user.password.decode(),
         location=reg_user.location,

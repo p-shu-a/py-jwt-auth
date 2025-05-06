@@ -25,7 +25,7 @@ class UserIn(BaseModel):
     username: str
     password: str
 
-class User(Base):
+class DBUser(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
