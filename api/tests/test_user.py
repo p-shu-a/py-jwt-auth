@@ -8,7 +8,7 @@ from httpx import ASGITransport, AsyncClient
 
 print(AsyncClient)
 
-client = TestClient(api)
+client = TestClient(api)   # this coudl be an issue
 
 TEST_USER_RESUABLE = RegisterUser("joan_holloway",
                                   "office_space",
