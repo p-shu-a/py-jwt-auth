@@ -5,7 +5,9 @@ The purpose of this project is to be able to compare and contrast the same code 
 The DB schema lives in the go-lang project repo
 
 #### TODO:
-- Fix db tests
+- Fix db tests...but first
+- remove sql alchemy and replace with fastAPI's SqlModel
+- use venv
 
 #### WHAT DID WE LEARN??
 - Python allows for you to play is fast and loose.
@@ -24,6 +26,7 @@ The DB schema lives in the go-lang project repo
     - specific to jwt lib, there was no differentiating of registerd claims, everything could be all custom.
 - I prefered Go's `http` lib's `http.Error` syntax. being able to define the structured responses was quite easy with go
     - If i had to define custom responses (hell, even changing the key from "details" to "message"), i'd need to define a custom exception
+    - though, i could define an ResponseItem (pydantic model) and return that...
 - Defining a `BaseModel` with pydantic is really awesome. great way to enforce types and way to outsource error checking
 - using `uvicorn` and having the app reload with ever cmd+s  is very convenient
 - using fastapis `@router.post("/foo",status_code=201)` decorator is a great way to limit methods on a handler and set default status_codes.
@@ -43,7 +46,6 @@ The DB schema lives in the go-lang project repo
 - in fact, modularizing, and going from in-mem db to postgrest was all very easy in GO. So was swapping over the tests.
 - It was a nightmare here. Really Not straight forward.
 - once again, the imports and dependencies with same names, but inablity to interoperate. wtf...
-- Fast APIs docs were juvinile
 - In general, as this project evolved, i found it more frustrating to work on.
     - knowledge of python didn't matter, felt that i was busy figuring out the libs
     - documentation accessible via intellisense was fukin brutal. online wasn't too much better
@@ -51,6 +53,7 @@ The DB schema lives in the go-lang project repo
     - debugging the test-harness was a PITA.
     - because python isn't async by default like go is, you have to dilligently add async/await.
         - If you miss putting async/await in front of a function or return, things will not work as expected.
+- Naming hell: if you're working on an API, its probably true that the libs will also have functions, vars, etc named API. don't add to the mess, use better names
 
 
 #### Notes on chatGPT
@@ -60,3 +63,11 @@ The DB schema lives in the go-lang project repo
 - I think there might be two reasons for this:
     1. Used just one chat window to do all the work. probably was hitting the context limit of a chat and the performance degraded severely. though, i gotta say i opened a new window and its help (with debugging, db realted test setup) was useless there to. which leads me to believe...
     2. i think with python, it might be a classic case of GIGO. garbage in, garbage out. its probably trained on TOOO much. Python can be a wild west, with thousand ways to skin the cat. I wonder if this could be true for interpreted langs in general. i used chatGPT for the same project in GO last week, and it was super helpful. complimentary to the docs. My hypothesis is that: compiled and statically-typed langs will be better generated through chatGPT precisely because it is a compiled and statically typed.
+
+
+
+#### Questions:
+- what are tags in fastAPI
+- in an annotation like this, what does Header() mean? "x-token exists in header?":
+    `x_token: Annotated[str, Header()]`
+- cut over from sql alchemy to sql model

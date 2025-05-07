@@ -35,3 +35,11 @@ async def register_handler(user: UserIn, session: AsyncSession = Depends(get_db_
     
     return {"message": f"{user.username} registerd successfully"}
 
+
+
+
+# define a /router/{username} end point to tell user they are registered or not
+# move as much of the path operations as possible into the api_router declaration
+# look more into path operators in fastapi
+# and dependiencies too
+# what are tags? just for documentation?
