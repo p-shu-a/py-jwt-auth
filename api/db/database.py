@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = "postgresql+asyncpg://token_master@localhost:5432/jwt_users"
 # create a async db connection:
-engine = create_async_engine(DATABASE_URL, echo=True)
+engine = create_async_engine(DATABASE_URL, echo=False)
 
 # create a session for db use
 # its a "session factory" that is, it gets you a fresh db session on demand

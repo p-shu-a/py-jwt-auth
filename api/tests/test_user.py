@@ -1,4 +1,3 @@
-from fastapi.testclient import TestClient
 import pytest_asyncio
 from api.models.user import RegisterUser
 from api.app import api
@@ -6,9 +5,6 @@ import time
 import pytest
 from httpx import ASGITransport, AsyncClient
 
-print(AsyncClient)
-
-client = TestClient(api)   # this coudl be an issue
 
 TEST_USER_RESUABLE = RegisterUser("joan_holloway",
                                   "office_space",
@@ -28,8 +24,15 @@ async def async_client():
 # test saving a new user
 @pytest.mark.asyncio
 async def test_register_new_user(async_client):
-    payload = {"username":f"joan_holloway_{int(time.time())}", "password":"office_space"}
+    
+    payload = {
+        "username":f"joan_holloway_{int(time.time())}",
+        "password":"office_space"
+    }
+
+    print(api.dependency_overrides)
     resp = await async_client.post("/register", json=payload)
+    
     assert resp.status_code == 201
     assert resp.json() == {"message" : f"{payload['username']} registerd successfully"}
 
