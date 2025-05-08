@@ -1,8 +1,9 @@
 from fastapi import HTTPException, APIRouter, Depends
 from api.db.database import get_db_session
-from api.models.user import DBUser, UserIn, RegisterUser
+from api.models.user import DBUser, UserIn
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+import bcrypt
 
 api_router = APIRouter()
 
@@ -16,16 +17,11 @@ async def register_handler(user: UserIn, session: AsyncSession = Depends(get_db_
     if user_exist:
         raise HTTPException(status_code=401, detail="user already registerd")
     
-    reg_user = RegisterUser(user.username, user.password, "internet", "127.0.0.1")
-
     db_user = DBUser(
-        username=reg_user.username,
-        password=reg_user.password.decode(),
-        location=reg_user.location,
-        ip_addr=reg_user.ip_addr,
-        created_at=reg_user.created_at
+        username=user.username,
+        password= bcrypt.hashpw(str.encode(user.password), bcrypt.gensalt(10)).decode(),
     )
-
+    
     session.add(db_user)
     try:
         await session.commit()

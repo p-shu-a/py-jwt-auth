@@ -1,9 +1,10 @@
 from datetime import datetime
-from sqlalchemy.dialects.postgresql import INET
-from sqlalchemy import Column, Integer, String, DateTime
-from api.db.database import Base
-from pydantic import BaseModel
 import bcrypt
+from sqlmodel import Field, SQLModel
+from sqlalchemy.dialects.postgresql import INET
+from sqlalchemy import Column
+from pydantic import BaseModel
+from typing import Union, Optional
 
 class RegisterUser:
     def __init__(self, username, password, location, ip_addr):
@@ -25,14 +26,16 @@ class UserIn(BaseModel):
     username: str
     password: str
 
-class DBUser(Base):
+class DBUser(SQLModel, table=True):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
-    location = Column(String)
-    ip_addr = Column(INET)
-    created_at = Column(DateTime)
-
-# THIS FILE LOOKS LIKE A CLUSTERFUCK FEELS.
+    # Note on syntax:
+    # var id: can either be int or None = default is None
+    id: Union[int, None] = Field(default=None, primary_key=True)
+    username: str = Field(unique=True, nullable=False)
+    password: str = Field(nullable=False)
+    location: Union[str,  None] = "Internet"
+    ip_addr: Union[str, None] = Field(
+            sa_column=Column(INET, nullable=False)
+    )
+    #created_at: Union[str, None] = Field(default=None) ### acutally db should manage created_at

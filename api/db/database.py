@@ -1,24 +1,21 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import declarative_base, sessionmaker
-
+from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = "postgresql+asyncpg://token_master@localhost:5432/jwt_users"
 # create a async db connection:
-engine = create_async_engine(DATABASE_URL, echo=False)
+
+prod_engine = create_async_engine(DATABASE_URL)
 
 # create a session for db use
 # its a "session factory" that is, it gets you a fresh db session on demand
-async_session = sessionmaker(
-                    bind=engine, 
-                    class_=AsyncSession, 
-                    expire_on_commit=False
+prod_async_session = sessionmaker(
+                        bind=prod_engine, 
+                        class_=AsyncSession, 
+                        expire_on_commit=False
 )
 
-# this is intersting...
-# provides a baseclass to register object (class) to DB Table
-Base = declarative_base()
-
+# this function gets called as a dependency into the routers
+# the function itself is a generator, which yields a session
 async def get_db_session():
-    async with async_session() as session:
+    async with prod_async_session() as session:
         yield session
-
