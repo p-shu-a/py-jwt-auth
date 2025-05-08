@@ -11,10 +11,10 @@ TEST_USER_RESUABLE = RegisterUser("joan_holloway",
                                   "internet",
                                   "127.0.0.1")
 
-TEST_USER_RESUABLE_JSON = {"username": "joan_holloway",
-                           "password": "office_space"}
+def get_test_user():
+    return {"username": f"joan_holloway_{int(time.time())}", "password": "office_space"}
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope="session")
 async def async_client():
     transport = ASGITransport(app=api)
     async with AsyncClient(transport=transport, base_url="http://jwt_test") as client:
@@ -25,12 +25,8 @@ async def async_client():
 @pytest.mark.asyncio
 async def test_register_new_user(async_client):
     
-    payload = {
-        "username":f"joan_holloway_{int(time.time())}",
-        "password":"office_space"
-    }
+    payload = get_test_user()
 
-    print(api.dependency_overrides)
     resp = await async_client.post("/register", json=payload)
     
     assert resp.status_code == 201
@@ -39,9 +35,12 @@ async def test_register_new_user(async_client):
 # Test saving an existing user.
 @pytest.mark.asyncio
 async def test_register_existing_user(async_client):
-    resp = await async_client.post("/register", json=TEST_USER_RESUABLE_JSON)
+    payload = get_test_user()
+    await async_client.post("/register", json=payload)
+    resp = await async_client.post("/register", json=payload)
     assert resp.status_code == 401
     assert resp.json() == {"detail": "user already registerd"}
+
 
 # what if the user sending in junk json?
 # we'll pydantic does most of the heavy lifting.
@@ -55,6 +54,7 @@ async def test_register_user_bad_json(async_client):
     resp = await async_client.post("/register", json=payload)
     assert resp.status_code == 422
 
+
 # try to log in as some non-existing user
 @pytest.mark.asyncio
 async def test_login_non_exist(async_client):
@@ -67,18 +67,20 @@ async def test_login_non_exist(async_client):
 # test logging in with an existing user
 @pytest.mark.asyncio
 async def test_login_existing_user(async_client):
-    
-    resp = await async_client.post("/login", json=TEST_USER_RESUABLE_JSON)
+    payload = get_test_user()
+    resp = await async_client.post("/login", json=payload)
     assert resp.status_code == 201
     resp_body = resp.json()
     assert "auth_token" in resp_body
-    assert resp_body['success'] == f"{TEST_USER_RESUABLE_JSON['username']} logged in"
+    assert resp_body['success'] == f"{payload['username']} logged in"
 
 # user exists but password is incorrect
 @pytest.mark.asyncio
 async def test_existing_user_wrong_password(async_client):
 
-    payload = {"username":TEST_USER_RESUABLE_JSON['username'],
+    payload = get_test_user()
+    await async_client.post("/login",json=payload)
+    payload = {"username":payload['username'],
                "password": "peggy_sue"}
     resp = await async_client.post("/login", json=payload)
     assert resp.status_code == 401
