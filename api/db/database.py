@@ -1,10 +1,13 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
 
-DATABASE_URL = "postgresql+asyncpg://token_master@localhost:5432/jwt_users"
+# moved to docker compose
+#PROD_DATABASE_URL = "postgresql+asyncpg://token_master@localhost:5432/jwt_users"
 # create a async db connection:
 
-prod_engine = create_async_engine(DATABASE_URL)
+PROD_DATABASE_URL = os.getenv("PROD_DATABASE_URL")
+prod_engine = create_async_engine(PROD_DATABASE_URL)
 
 # create a session for db use
 # its a "session factory." that is, it creates a fresh db session on demand

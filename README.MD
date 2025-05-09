@@ -10,7 +10,6 @@ The DB schema lives in the go-lang project repo
     - well turns out, it no longer validates unauthorized keys coming in the request body, which is no help
     - thus, i had to include a pydantic model after all. i think all the work i did to remove sqlalchemy and replace it with sqlmodel didn't really pan out. 
     - sqlalchemy can't really be replaced. the async capabilities, postgres dialects all belong to that package. not sqlmodel. now...
-- i have to remove sqlmodel 🤬
 
 #### WHAT DID WE LEARN??
 - Python allows for you to play is fast and loose.

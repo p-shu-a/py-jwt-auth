@@ -6,8 +6,11 @@ import asyncio
 from api.app import api
 from api.db.database import get_db_session
 from httpx import ASGITransport, AsyncClient
+import os
 
-TEST_DATABASE_URL = "postgresql+asyncpg://token_master@localhost:5432/jwt_test"
+# moved to docker_compose
+#TEST_DATABASE_URL = "postgresql+asyncpg://token_master@localhost:5432/jwt_test"
+TEST_DATABASE_URL = os.genenv("TEST_DATABASE_URL")
 
 test_engine = create_async_engine(
     TEST_DATABASE_URL, 
