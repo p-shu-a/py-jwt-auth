@@ -1,3 +1,4 @@
+import traceback
 from fastapi import HTTPException, APIRouter, Depends
 from api.db.database import get_db_session
 from api.models.user import DBUser, UserIn
@@ -10,9 +11,13 @@ api_router = APIRouter()
 @api_router.post("/register", status_code=201)
 async def register_handler(user: UserIn, session: AsyncSession = Depends(get_db_session)):
 
-    query = select(DBUser).where(DBUser.username == user.username)
-    result = await session.execute(query)
-    user_exist = result.scalar_one_or_none()
+    try:
+        query = select(DBUser).where(DBUser.username == user.username)
+        result = await session.execute(query)
+        user_exist = result.scalar_one_or_none()
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail=f"failed to lookup user {e}")
 
     if user_exist:
         raise HTTPException(status_code=401, detail="user already registerd")
@@ -22,13 +27,13 @@ async def register_handler(user: UserIn, session: AsyncSession = Depends(get_db_
         password= bcrypt.hashpw(str.encode(user.password), bcrypt.gensalt(10)).decode(),
     )
     
-    session.add(db_user)
     try:
+        session.add(db_user)
         await session.commit()
     except Exception as e:
         await session.rollback()
         raise HTTPException(status_code=500, detail=f"failed to register user {e}")
-    
+        # seriously, don't include exceptions in the responses back to the users.
     return {"message": f"{user.username} registerd successfully"}
 
 

@@ -1,10 +1,6 @@
-import pytest_asyncio
 from api.models.user import RegisterUser
-from api.app import api
 import time
 import pytest
-from httpx import ASGITransport, AsyncClient
-
 
 TEST_USER_RESUABLE = RegisterUser("joan_holloway",
                                   "office_space",
@@ -14,21 +10,11 @@ TEST_USER_RESUABLE = RegisterUser("joan_holloway",
 def get_test_user():
     return {"username": f"joan_holloway_{int(time.time())}", "password": "office_space"}
 
-@pytest_asyncio.fixture(scope="session")
-async def async_client():
-    transport = ASGITransport(app=api)
-    async with AsyncClient(transport=transport, base_url="http://jwt_test") as client:
-        yield client
-
-
 # test saving a new user
 @pytest.mark.asyncio
-async def test_register_new_user(async_client):
-    
+async def test_register_new_user(async_client):     # async_client is injected as a dependancy by pytest. its automagic
     payload = get_test_user()
-
     resp = await async_client.post("/register", json=payload)
-    
     assert resp.status_code == 201
     assert resp.json() == {"message" : f"{payload['username']} registerd successfully"}
 

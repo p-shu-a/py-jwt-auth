@@ -1,10 +1,10 @@
 from datetime import datetime
 import bcrypt
-from sqlmodel import Field, SQLModel
-from sqlalchemy.dialects.postgresql import INET
+from sqlalchemy.dialects.postgresql import INET, INTEGER, TEXT, TIMESTAMP
 from sqlalchemy import Column
 from pydantic import BaseModel
-from typing import Union, Optional
+from api.db.database import Base
+
 
 class RegisterUser:
     def __init__(self, username, password, location, ip_addr):
@@ -22,20 +22,18 @@ class RegisterUser:
             "ip_addr" : self.ip_addr
         })
 
+# pydantic model, best way to audit the requrest params
 class UserIn(BaseModel):    
     username: str
     password: str
 
-class DBUser(SQLModel, table=True):
+class DBUser(Base):
     __tablename__ = "users"
-
-    # Note on syntax:
-    # var id: can either be int or None = default is None
-    id: Union[int, None] = Field(default=None, primary_key=True)
-    username: str = Field(unique=True, nullable=False)
-    password: str = Field(nullable=False)
-    location: Union[str,  None] = "Internet"
-    ip_addr: Union[str, None] = Field(
-            sa_column=Column(INET, nullable=False)
-    )
-    #created_at: Union[str, None] = Field(default=None) ### acutally db should manage created_at
+    # that name above has to be correct. thats how we map the DB table to this object
+    # the column types below also have to be correct
+    id         = Column(INTEGER, default=None, primary_key=True)
+    username   = Column(TEXT, unique=True, nullable=False)
+    password   = Column(TEXT, nullable=False)
+    location   = Column(TEXT, default="Internet")
+    ip_addr    = Column(INET)
+    created_at = Column(TIMESTAMP, nullable=True, server_default="now()")
