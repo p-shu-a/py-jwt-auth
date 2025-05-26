@@ -1,9 +1,9 @@
 ### Python Version of the JWT auth API.
 It will do the same thing.
-Main libs: python, fastapi, postgres
+Main requirements: python, fastapi, postgres
 The purpose of this project is to be able to compare and contrast the same code in python vs Go-lang
 The DB schema lives in the go-lang project repo
-
+---
 #### TODO:
 - remove sql alchemy and replace with fastAPI's SqlModel
     - or not!!! figured i'd remove the pydantic model and let the sqlmodel remplace the declartive base and do all the work...
@@ -79,7 +79,6 @@ The DB schema lives in the go-lang project repo
 - in an annotation like this, what does Header() mean? "x-token exists in header?":
     `x_token: Annotated[str, Header()]`
 - cut over from sql alchemy to sql model
-
 
 #### More learnings:
 - if you're testing async infra, your tests should also be async
