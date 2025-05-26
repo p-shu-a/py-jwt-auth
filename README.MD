@@ -1,8 +1,10 @@
-### Python Version of the JWT auth API.
+#### Python Version of the JWT-auth API (which is written in Go
+
 It will do the same thing.
 Main requirements: python, fastapi, postgres
 The purpose of this project is to be able to compare and contrast the same code in python vs Go-lang
 The DB schema lives in the go-lang project repo
+
 ---
 #### TODO:
 - remove sql alchemy and replace with fastAPI's SqlModel
