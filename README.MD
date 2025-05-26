@@ -1,4 +1,4 @@
-#### Python Version of the JWT-auth API (which is written in Go
+#### Python Version of the JWT-auth API (which is written in Go)
 
 It will do the same thing.
 Main requirements: python, fastapi, postgres
