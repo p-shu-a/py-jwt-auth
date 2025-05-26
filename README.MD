@@ -66,20 +66,6 @@ The DB schema lives in the go-lang project repo
         - options are: session and function
     - this can really be a mother fucker...
 
-
-#### Notes on chatGPT
-- I used ChatGPT(4o) to help me with the app, and I gotta say, it shit the bed.
-- By the time I quit using chatgpt for help, it was giving me shit. (Literally: "your variable is name override, change it to _override")
-- I think there might be two reasons for this:
-    1. Used just one chat window to do all the work. probably was hitting the context limit of a chat and the performance degraded severely. though, i gotta say i opened a new window and its help (with debugging, db realted test setup) was useless there to. which leads me to believe...
-    2. i think with python, it might be a classic case of GIGO. garbage in, garbage out. its probably trained on TOOO much. Python can be a wild west, with thousand ways to skin the cat. I wonder if this could be true for interpreted langs in general. i used chatGPT for the same project in GO last week, and it was super helpful. complimentary to the docs. My hypothesis is that: compiled and statically-typed langs will be better generated through chatGPT precisely because it is a compiled and statically typed.
-
-#### Questions:
-- what are tags in fastAPI
-- in an annotation like this, what does Header() mean? "x-token exists in header?":
-    `x_token: Annotated[str, Header()]`
-- cut over from sql alchemy to sql model
-
 #### More learnings:
 - if you're testing async infra, your tests should also be async
     - just like function which call async func should be async (and vice versa)
@@ -102,3 +88,17 @@ The DB schema lives in the go-lang project repo
     - otherwise good luck. enforcement of return types, another point for statically typed langs
 - Generators are very interesting
     - checkout the comments in conftest.py for more notes. trust me they're worth it!
+---
+#### Questions:
+- what are tags in fastAPI
+- in an annotation like this, what does Header() mean? "x-token exists in header?":
+    `x_token: Annotated[str, Header()]`
+- cut over from sql alchemy to sql model
+
+---
+#### Notes on chatGPT
+- I used ChatGPT(4o) to help me with the app, and I gotta say, it shit the bed.
+- By the time I quit using chatgpt for help, it was giving me shit. (Literally: "your variable is name override, change it to _override")
+- I think there might be two reasons for this:
+    1. Used just one chat window to do all the work. probably was hitting the context limit of a chat and the performance degraded severely. though, i gotta say i opened a new window and its help (with debugging, db realted test setup) was useless there to. which leads me to believe...
+    2. i think with python, it might be a classic case of GIGO. garbage in, garbage out. its probably trained on TOOO much. Python can be a wild west, with thousand ways to skin the cat. I wonder if this could be true for interpreted langs in general. i used chatGPT for the same project in GO last week, and it was super helpful. complimentary to the docs. My hypothesis is that: compiled and statically-typed langs will be better generated through chatGPT precisely because it is a compiled and statically typed.
